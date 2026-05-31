@@ -1,6 +1,10 @@
 import * as THREE from 'three';
 import { ShirtCut, LayoutStyle } from '@/store/shirtStore';
 
+/**
+ * Technical Coordinate Mapping for 'shirt_baked.glb'
+ * Refined for diagonal seams and realistic garment construction.
+ */
 export function generateShirtTexture(
   cut: ShirtCut,
   layout: LayoutStyle,
@@ -12,38 +16,67 @@ export function generateShirtTexture(
   canvas.height = 1024;
   const ctx = canvas.getContext('2d')!;
 
-  // 1. Fill base color (Main Body)
+  // 1. Base Layer (Main Body)
   ctx.fillStyle = baseColor;
   ctx.fillRect(0, 0, 1024, 1024);
 
-  // 2. Apply Cut-specific coloring (Raglan, Polo, etc.)
+  // 2. Technical Cut Layers
   ctx.fillStyle = accentColor;
 
   if (cut === 'raglan' || cut === 'baseball-raglan') {
-    // Fill sleeve islands (Approximate coordinates for shirt_baked.glb)
-    ctx.fillRect(0, 0, 307, 700); 
-    ctx.fillRect(717, 0, 307, 700);
-    // Fill collar band
-    ctx.fillRect(0, 870, 1024, 154); 
+    // DRAW RAGLAN SLEEVES (Diagonal paths meeting at the collar)
+    
+    // Left Sleeve Island + Shoulder Area
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(310, 0);
+    ctx.lineTo(400, 850); // Diagonal seam to neck
+    ctx.lineTo(310, 850); 
+    ctx.lineTo(0, 700);
+    ctx.closePath();
+    ctx.fill();
+
+    // Right Sleeve Island + Shoulder Area
+    ctx.beginPath();
+    ctx.moveTo(1024, 0);
+    ctx.lineTo(714, 0);
+    ctx.lineTo(624, 850); // Diagonal seam to neck
+    ctx.lineTo(714, 850);
+    ctx.lineTo(1024, 700);
+    ctx.closePath();
+    ctx.fill();
+
+    // Collar Band (Matches sleeves in Raglan style)
+    ctx.fillRect(0, 860, 1024, 164); 
+
   } else if (cut === 'vneck' || cut === 'polo') {
-    ctx.fillRect(0, 870, 1024, 154);
+    // Sharp collar definition
+    ctx.fillRect(0, 860, 1024, 164);
     if (cut === 'polo') {
-        ctx.fillRect(490, 600, 44, 270);
+        ctx.fillRect(485, 580, 54, 280); // Technical placket
     }
   }
 
-  // 3. Apply Design Layout
+  // 3. Ringer / Accent Details
+  // (Always color the cuffs and collar if they are technically 'accented')
+  if (layout === 'piping') {
+    ctx.fillStyle = accentColor;
+    ctx.fillRect(0, 860, 1024, 20); // Top of collar
+    ctx.fillRect(0, 0, 1024, 15);   // Bottom Hem
+  }
+
+  // 4. Design Patterns
   ctx.fillStyle = accentColor;
   if (layout === 'chest-stripe') {
-    ctx.fillRect(300, 650, 424, 50);
+    ctx.fillRect(320, 640, 384, 60);
   } else if (layout === 'double-chest-stripe') {
-    ctx.fillRect(300, 680, 424, 20);
-    ctx.fillRect(300, 640, 424, 20);
+    ctx.fillRect(320, 680, 384, 20);
+    ctx.fillRect(320, 630, 384, 20);
   }
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.needsUpdate = true;
-  texture.flipY = false;
+  texture.flipY = false; 
   return texture;
 }
 
