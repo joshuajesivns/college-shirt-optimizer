@@ -10,8 +10,8 @@ const state = proxy({
   style: 'plain', // plain, raglan, striped
   isLogoTexture: true,
   isFullTexture: false,
-  logoDecal: './vite.svg',
-  fullDecal: './vite.svg',
+  logoDecal: 'threejs.png',
+  fullDecal: 'threejs.png',
   
   // Placement settings
   logoPosition: [0, 0.04, 0.15],

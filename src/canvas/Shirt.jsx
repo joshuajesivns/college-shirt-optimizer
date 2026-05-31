@@ -9,7 +9,7 @@ import state from '../store';
 
 const Shirt = () => {
   const snap = useSnapshot(state);
-  const { nodes, materials } = useGLTF('/shirt_baked.glb');
+  const { nodes, materials } = useGLTF('shirt_baked.glb');
 
   const logoTexture = useTexture(snap.logoDecal);
   const fullTexture = useTexture(snap.fullDecal);
@@ -111,7 +111,6 @@ const Shirt = () => {
             <PerspectiveCamera makeDefault manual aspect={1} position={[0, 0, 5]} />
             <color attach="background" args={[snap.colors.body]} />
             <Text
-              font={snap.textFont === 'Inter' ? '/Inter-Bold.woff' : undefined}
               fontSize={1}
               color={snap.textColor}
               anchorX="center"
