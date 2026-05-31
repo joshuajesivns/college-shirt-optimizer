@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useSnapshot } from 'valtio';
 
 import state from '../store';
+import { downloadCanvasToImage } from '../config/helpers';
 import { fadeAnimation, slideAnimation } from '../config/motion';
 import { CustomButton, ColorPicker, FilePicker, Tab, TextEditor, StylesEditor } from '../components';
 import { EditorTabs, FilterTabs, DecalTypes } from '../config/constants';
@@ -104,9 +105,15 @@ const Customizer = () => {
           </motion.div>
 
           <motion.div
-            className="absolute z-10 top-5 right-5"
+            className="absolute z-10 top-5 right-5 flex gap-2"
             {...fadeAnimation}
           >
+            <CustomButton 
+              type="filled"
+              title="Download"
+              handleClick={() => downloadCanvasToImage()}
+              customStyles="w-fit px-4 py-2.5 font-bold text-sm"
+            />
             <CustomButton 
               type="filled"
               title="Go Back"
