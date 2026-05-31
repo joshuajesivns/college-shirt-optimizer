@@ -13,8 +13,7 @@ import * as THREE from 'three';
 import { useSnapshot } from 'valtio';
 import { shirtStore, LogoLayer, TextLayer } from '@/store/shirtStore';
 import { PLACEMENT_COORDS } from '@/utils/shirtPatterns';
-import { computeVertexColors } from '@/utils/vertexColors';
-import { generateTextTexture } from '@/utils/textureUtils';
+import { generateShirtTexture, generateTextTexture } from '@/utils/textureUtils';
 
 // ─── WebGL support check ─────────────────────────────────────────────────────
 function isWebGLSupported(): boolean {
@@ -85,53 +84,37 @@ function TextDecal({ layer }: { layer: TextLayer }) {
   );
 }
 
-// ─── Shirt mesh with vertex-color driven patterns ────────────────────────────
+// ─── Shirt mesh with dynamic texture-driven patterns ────────────────────────────
 function ShirtModel() {
   const snap = useSnapshot(shirtStore);
   const baseUrl = import.meta.env.BASE_URL;
   const { nodes } = useGLTF(`${baseUrl}shirt_baked.glb`) as any;
 
-  // Clone geometry once so we own the buffers
-  const geometry = useMemo(() => {
-    const geo = (nodes.T_Shirt_male.geometry as THREE.BufferGeometry).clone();
-    // Pre-create the color attribute with correct size
-    const count = geo.attributes.position.count;
-    geo.setAttribute(
-      'color',
-      new THREE.BufferAttribute(new Float32Array(count * 3), 3),
-    );
-    return geo;
-  }, [nodes]);
-
-  // Dispose cloned geometry on unmount
-  useEffect(() => () => geometry.dispose(), [geometry]);
-
-  // Material with vertexColors so patterns show; no external texture needed
-  const material = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        vertexColors: true,
-        roughness: 0.88,
-        metalness: 0.0,
-      }),
-    [],
-  );
-  useEffect(() => () => material.dispose(), [material]);
-
-  // Re-paint vertex colors whenever any design state changes
-  useEffect(() => {
-    computeVertexColors(
-      geometry,
+  // Create a dynamic texture based on the current design
+  const shirtTexture = useMemo(() => {
+    return generateShirtTexture(
       snap.shirtCut,
       snap.layoutStyle,
       snap.color,
-      snap.accentColor,
+      snap.accentColor
     );
-  }, [geometry, snap.shirtCut, snap.layoutStyle, snap.color, snap.accentColor]);
+  }, [snap.shirtCut, snap.layoutStyle, snap.color, snap.accentColor]);
+
+  // Dispose texture on unmount
+  useEffect(() => () => shirtTexture.dispose(), [shirtTexture]);
 
   return (
     <group dispose={null}>
-      <mesh castShadow receiveShadow geometry={geometry} material={material}>
+      <mesh 
+        castShadow 
+        receiveShadow 
+        geometry={nodes.T_Shirt_male.geometry}
+      >
+        <meshStandardMaterial 
+          map={shirtTexture} 
+          roughness={0.88} 
+          metalness={0.0} 
+        />
         {/* Logos */}
         {snap.logos.map((logo) => (
           <LogoDecal key={logo.id} layer={logo} />

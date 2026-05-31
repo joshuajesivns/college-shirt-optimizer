@@ -1,80 +1,50 @@
 import * as THREE from 'three';
+import { ShirtCut, LayoutStyle } from '@/store/shirtStore';
 
-export function generateSolidTexture(color: string): THREE.CanvasTexture {
-  const canvas = document.createElement('canvas');
-  canvas.width = 64;
-  canvas.height = 64;
-  const ctx = canvas.getContext('2d')!;
-  ctx.fillStyle = color;
-  ctx.fillRect(0, 0, 64, 64);
-  const tex = new THREE.CanvasTexture(canvas);
-  tex.needsUpdate = true;
-  return tex;
-}
-
-export function generateGradientTexture(
-  color1: string,
-  color2: string
+export function generateShirtTexture(
+  cut: ShirtCut,
+  layout: LayoutStyle,
+  baseColor: string,
+  accentColor: string,
 ): THREE.CanvasTexture {
   const canvas = document.createElement('canvas');
-  canvas.width = 256;
-  canvas.height = 512;
+  canvas.width = 1024;
+  canvas.height = 1024;
   const ctx = canvas.getContext('2d')!;
-  const grad = ctx.createLinearGradient(0, 0, 0, 512);
-  grad.addColorStop(0, color1);
-  grad.addColorStop(1, color2);
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 256, 512);
-  const tex = new THREE.CanvasTexture(canvas);
-  tex.needsUpdate = true;
-  return tex;
-}
 
-export function generateSplitTexture(
-  colorLeft: string,
-  colorRight: string
-): THREE.CanvasTexture {
-  const canvas = document.createElement('canvas');
-  canvas.width = 256;
-  canvas.height = 256;
-  const ctx = canvas.getContext('2d')!;
-  ctx.fillStyle = colorLeft;
-  ctx.fillRect(0, 0, 128, 256);
-  ctx.fillStyle = colorRight;
-  ctx.fillRect(128, 0, 128, 256);
-  const tex = new THREE.CanvasTexture(canvas);
-  tex.needsUpdate = true;
-  return tex;
-}
+  // 1. Fill base color (Main Body)
+  ctx.fillStyle = baseColor;
+  ctx.fillRect(0, 0, 1024, 1024);
 
-export function generateSubTexture(
-  color1: string,
-  color2: string
-): THREE.CanvasTexture {
-  const canvas = document.createElement('canvas');
-  canvas.width = 512;
-  canvas.height = 512;
-  const ctx = canvas.getContext('2d')!;
-  const grad = ctx.createLinearGradient(0, 0, 512, 512);
-  grad.addColorStop(0, color1);
-  grad.addColorStop(0.4, color2);
-  grad.addColorStop(0.7, color1);
-  grad.addColorStop(1, color2);
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 512, 512);
-  // subtle noise
-  for (let i = 0; i < 1200; i++) {
-    const x = Math.random() * 512;
-    const y = Math.random() * 512;
-    const r = Math.random() * 2.5;
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.15})`;
-    ctx.fill();
+  // 2. Apply Cut-specific coloring (Raglan, Polo, etc.)
+  ctx.fillStyle = accentColor;
+
+  if (cut === 'raglan' || cut === 'baseball-raglan') {
+    // Fill sleeve islands (Approximate coordinates for shirt_baked.glb)
+    ctx.fillRect(0, 0, 307, 700); 
+    ctx.fillRect(717, 0, 307, 700);
+    // Fill collar band
+    ctx.fillRect(0, 870, 1024, 154); 
+  } else if (cut === 'vneck' || cut === 'polo') {
+    ctx.fillRect(0, 870, 1024, 154);
+    if (cut === 'polo') {
+        ctx.fillRect(490, 600, 44, 270);
+    }
   }
-  const tex = new THREE.CanvasTexture(canvas);
-  tex.needsUpdate = true;
-  return tex;
+
+  // 3. Apply Design Layout
+  ctx.fillStyle = accentColor;
+  if (layout === 'chest-stripe') {
+    ctx.fillRect(300, 650, 424, 50);
+  } else if (layout === 'double-chest-stripe') {
+    ctx.fillRect(300, 680, 424, 20);
+    ctx.fillRect(300, 640, 424, 20);
+  }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.needsUpdate = true;
+  texture.flipY = false;
+  return texture;
 }
 
 export function generateTextTexture(
