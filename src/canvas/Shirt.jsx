@@ -14,53 +14,29 @@ const Shirt = () => {
   const logoTexture = useTexture(snap.logoDecal);
   const fullTexture = useTexture(snap.fullDecal);
 
-  // Setup Shader for Raglan coloring (Body vs Sleeves)
-  // Based on the UV map of shirt_baked.glb:
-  // Body is roughly in the center/bottom UVs.
-  // Sleeves are typically separate islands.
-  // We'll use a simple UV bounding box approach if they aren't separate meshes.
-  // Since shirt_baked.glb is ONE mesh, we use a shader to color parts.
-  
+  // Smoothly damp the base color
   useFrame((state, delta) => {
     easing.dampC(materials.lambert1.color, snap.colors.body, 0.25, delta);
   });
 
-  // Inject shader logic for sleeve coloring if 'raglan' style is active
-  materials.lambert1.onBeforeCompile = (shader) => {
-    shader.uniforms.uSleeveColor = { value: new THREE.Color(snap.colors.sleeves) };
-    shader.uniforms.uIsRaglan = { value: snap.style === 'raglan' ? 1.0 : 0.0 };
-    
-    shader.fragmentShader = `
-      uniform vec3 uSleeveColor;
-      uniform float uIsRaglan;
-    ` + shader.fragmentShader;
-
-    shader.fragmentShader = shader.fragmentShader.replace(
-      '#include <map_fragment>',
-      `
-      #include <map_fragment>
-      if (uIsRaglan > 0.5) {
-        // Approximate UV regions for sleeves in shirt_baked.glb
-        // Right Sleeve: X > 0.7 or specific regions
-        // Left Sleeve: X < 0.3 or specific regions
-        // Note: These are heuristic for shirt_baked.glb
-        if (vMapUv.x < 0.28 || vMapUv.x > 0.72 || vMapUv.y > 0.85) {
-          diffuseColor.rgb = uSleeveColor;
-        }
-      }
-      `
-    );
-  };
-
-  // Sync uniforms on every frame
-  useFrame(() => {
-    if (materials.lambert1.userData.shader) {
-      materials.lambert1.userData.shader.uniforms.uSleeveColor.value.set(snap.colors.sleeves);
-      materials.lambert1.userData.shader.uniforms.uIsRaglan.value = snap.style === 'raglan' ? 1.0 : 0.0;
+  // Logo position calculation based on placement
+  const getLogoPosition = () => {
+    switch(snap.logoPlacement) {
+      case 'left_sleeve': return [-0.18, 0.1, 0.05];
+      case 'right_sleeve': return [0.18, 0.1, 0.05];
+      default: return snap.logoPosition; // Chest
     }
-  });
+  }
 
-  // Re-inject if shader was lost or style changed
+  const getLogoRotation = () => {
+    switch(snap.logoPlacement) {
+      case 'left_sleeve': return [0, -Math.PI / 2, 0];
+      case 'right_sleeve': return [0, Math.PI / 2, 0];
+      default: return snap.logoRotation;
+    }
+  }
+
+  // Inject shader logic for sleeve coloring
   materials.lambert1.onBeforeCompile = (shader) => {
     materials.lambert1.userData.shader = shader;
     shader.uniforms.uSleeveColor = { value: new THREE.Color(snap.colors.sleeves) };
@@ -76,13 +52,24 @@ const Shirt = () => {
       `
       #include <map_fragment>
       if (uIsRaglan > 0.5) {
-        if (vMapUv.x < 0.28 || vMapUv.x > 0.72 || vMapUv.y > 0.65) {
+        // Precise UV boundaries for sleeves in shirt_baked.glb
+        bool isSleeve = (vMapUv.x < 0.26 || vMapUv.x > 0.74);
+        bool isCollar = (vMapUv.y > 0.88);
+        if (isSleeve || isCollar) {
           diffuseColor.rgb = uSleeveColor;
         }
       }
       `
     );
   };
+
+  // Sync uniforms on every frame for real-time updates
+  useFrame(() => {
+    if (materials.lambert1.userData.shader) {
+      materials.lambert1.userData.shader.uniforms.uSleeveColor.value.set(snap.colors.sleeves);
+      materials.lambert1.userData.shader.uniforms.uIsRaglan.value = snap.style === 'raglan' ? 1.0 : 0.0;
+    }
+  });
 
   const stateString = JSON.stringify(snap);
 
@@ -106,8 +93,8 @@ const Shirt = () => {
 
         {snap.isLogoTexture && (
           <Decal 
-            position={snap.logoPosition}
-            rotation={snap.logoRotation}
+            position={getLogoPosition()}
+            rotation={getLogoRotation()}
             scale={snap.logoScale}
             map={logoTexture}
             depthTest={false}
@@ -122,7 +109,7 @@ const Shirt = () => {
         >
           <RenderTexture attach="map">
             <PerspectiveCamera makeDefault manual aspect={1} position={[0, 0, 5]} />
-            <color attach="background" args={[snap.style === 'raglan' ? snap.colors.body : snap.colors.body]} />
+            <color attach="background" args={[snap.colors.body]} />
             <Text
               font={snap.textFont === 'Inter' ? '/Inter-Bold.woff' : undefined}
               fontSize={1}

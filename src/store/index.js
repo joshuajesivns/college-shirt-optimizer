@@ -12,16 +12,19 @@ const state = proxy({
   isFullTexture: false,
   logoDecal: './vite.svg',
   fullDecal: './vite.svg',
+  
+  // Placement settings
   logoPosition: [0, 0.04, 0.15],
   logoRotation: [0, 0, 0],
   logoScale: 0.15,
+  logoPlacement: 'chest', // chest, left_sleeve, right_sleeve
+  
   text: 'NSTP',
   textColor: '#ffffff',
-  textFont: 'Inter', // Default font
+  textFont: 'Inter',
   textPosition: [0, 0.04, -0.15],
   textRotation: [0, Math.PI, 0],
   textScale: 0.2,
-  activeTab: 'logo', // logo or text
 });
 
 export default state;
