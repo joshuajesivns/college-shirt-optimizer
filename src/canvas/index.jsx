@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Environment, Center, OrbitControls } from '@react-three/drei';
 
 import Shirt from './Shirt';
-import Backdrop from './Backdrop'; // We'll create this for shadows
-import CameraRig from './CameraRig'; // We'll create this for smooth camera
+import Backdrop from './Backdrop';
+import CameraRig from './CameraRig';
 
 const CanvasModel = () => {
   return (
@@ -17,12 +17,14 @@ const CanvasModel = () => {
       <ambientLight intensity={0.5} />
       <Environment preset="city" />
 
-      <CameraRig>
-        <Backdrop />
-        <Center>
-          <Shirt />
-        </Center>
-      </CameraRig>
+      <Suspense fallback={null}>
+        <CameraRig>
+          <Backdrop />
+          <Center>
+            <Shirt />
+          </Center>
+        </CameraRig>
+      </Suspense>
       
       <OrbitControls 
         enablePan={false}
