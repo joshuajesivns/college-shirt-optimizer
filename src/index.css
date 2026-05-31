@@ -1,0 +1,62 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,200;6..12,500;6..12,800&family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.app {
+  @apply relative w-full h-screen overflow-hidden transition-all ease-in;
+}
+
+.home {
+  @apply w-fit xl:h-full flex flex-col justify-start items-start p-6 xl:px-36 xl:py-8 z-10;
+}
+
+.home-content {
+  @apply flex-1 xl:justify-center justify-start flex flex-col gap-10;
+}
+
+.head-text {
+  @apply xl:text-[10rem] text-[6rem] xl:leading-[11rem] leading-[7rem] font-black text-black;
+}
+
+.editortabs-container {
+  @apply glassmorphism w-16 border-[2px] rounded-lg flex flex-col justify-center items-center ml-1 py-4 gap-4;
+}
+
+.filtertabs-container {
+  @apply absolute z-10 bottom-5 right-0 left-0 w-full flex justify-center items-center gap-4;
+}
+
+.tab-btn {
+  @apply w-14 h-14 flex justify-center items-center cursor-pointer select-none;
+}
+
+.filepicker-container {
+  @apply absolute left-full ml-3 glassmorphism p-3 w-[270px] flex flex-col rounded-md shadow-lg;
+}
+
+.filepicker-label {
+  @apply border border-gray-300 py-1.5 px-2 rounded-md shadow-sm text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer w-fit;
+}
+
+.glassmorphism {
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 2px 30px 0 rgba(31, 38, 135, 0.07);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+input[type="file"] {
+  display: none;
+}

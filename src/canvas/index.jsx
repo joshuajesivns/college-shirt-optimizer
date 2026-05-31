@@ -1,0 +1,36 @@
+import React from 'react'
+import { Canvas } from '@react-three/fiber'
+import { Environment, Center, OrbitControls } from '@react-three/drei';
+
+import Shirt from './Shirt';
+import Backdrop from './Backdrop'; // We'll create this for shadows
+import CameraRig from './CameraRig'; // We'll create this for smooth camera
+
+const CanvasModel = () => {
+  return (
+    <Canvas
+      shadows
+      camera={{ position: [0, 0, 0], fov: 25 }}
+      gl={{ preserveDrawingBuffer: true }}
+      className="w-full max-w-full h-full transition-all ease-in"
+    >
+      <ambientLight intensity={0.5} />
+      <Environment preset="city" />
+
+      <CameraRig>
+        <Backdrop />
+        <Center>
+          <Shirt />
+        </Center>
+      </CameraRig>
+      
+      <OrbitControls 
+        enablePan={false}
+        minDistance={0.5}
+        maxDistance={2}
+      />
+    </Canvas>
+  )
+}
+
+export default CanvasModel
