@@ -88,7 +88,8 @@ function TextDecal({ layer }: { layer: TextLayer }) {
 // ─── Shirt mesh with vertex-color driven patterns ────────────────────────────
 function ShirtModel() {
   const snap = useSnapshot(shirtStore);
-  const { nodes } = useGLTF('/shirt_baked.glb') as any;
+  const baseUrl = import.meta.env.BASE_URL;
+  const { nodes } = useGLTF(`${baseUrl}shirt_baked.glb`) as any;
 
   // Clone geometry once so we own the buffers
   const geometry = useMemo(() => {
@@ -189,8 +190,7 @@ function WebGLFallback() {
 
 // ─── Main exported canvas ─────────────────────────────────────────────────────
 export default function ShirtCanvas() {
-  const [webglSupported, setWebglSupported] = useState<boolean | null>(null);
-  useEffect(() => setWebglSupported(isWebGLSupported()), []);
+  const webglSupported = true; // Bypass detection to allow standard browser behavior
   if (webglSupported === null) return null;
   if (!webglSupported) return <WebGLFallback />;
 
