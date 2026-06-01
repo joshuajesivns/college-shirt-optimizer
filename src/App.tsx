@@ -3,20 +3,17 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
-import ShirtCanvas from "@/components/ShirtCanvas";
+import ShirtPreview2D from "@/components/ShirtPreview2D";
 import DesignPanel from "@/components/DesignPanel";
-import { WebGLErrorBoundary } from "@/components/WebGLErrorBoundary";
 
 const queryClient = new QueryClient();
 
 function Home() {
   return (
     <main className="relative w-full h-[100dvh] overflow-hidden bg-background text-foreground flex flex-col md:flex-row dark">
-      {/* 3D Canvas */}
-      <div className="flex-1 h-full relative cursor-grab active:cursor-grabbing">
-        <WebGLErrorBoundary>
-          <ShirtCanvas />
-        </WebGLErrorBoundary>
+      {/* 2D Preview */}
+      <div className="flex-1 h-full relative overflow-hidden">
+        <ShirtPreview2D />
       </div>
 
       {/* UI Panel */}

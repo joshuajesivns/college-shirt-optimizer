@@ -4,9 +4,9 @@ export type ShirtCut =
   | 'crew'
   | 'raglan'
   | 'baseball-raglan'
-  | 'vneck'
+  | 'ringer'
   | 'polo'
-  | 'henley';
+  | 'box-tee';
 
 export type LayoutStyle =
   | 'plain'
@@ -20,19 +20,14 @@ export type LayoutStyle =
   | 'diagonal-stripe'
   | 'asymmetrical'
   | 'piping'
-  | 'chevron'
-  | 'gradient'
-  | 'full-sublimation'
-  | 'split-color';
+  | 'chevron';
 
 export type DecalPosition =
   | 'chest'
   | 'left-chest'
   | 'back'
-  | 'left-shoulder'
-  | 'right-shoulder'
-  | 'sleeve-left'
-  | 'sleeve-right';
+  | 'left-sleeve'
+  | 'right-sleeve';
 
 export type TextLayer = {
   id: string;
@@ -41,21 +36,30 @@ export type TextLayer = {
   fontSize: 'small' | 'medium' | 'large';
   color: string;
   position: DecalPosition;
+  x?: number; // 2D position
+  y?: number;
 };
 
 export type LogoLayer = {
   id: string;
   url: string;
   position: DecalPosition;
+  x?: number; // 2D position
+  y?: number;
+  scale?: number;
 };
 
 export const shirtStore = proxy({
-  color: '#111111',
-  accentColor: '#ffffff',
-  shirtCut: 'crew' as ShirtCut,
+  color: '#ffffff',
+  accentColor: '#0B5D2A', // University Green
+  collarColor: '#0B5D2A',
+  cuffColor: '#0B5D2A',
+  shirtCut: 'raglan' as ShirtCut,
   layoutStyle: 'plain' as LayoutStyle,
+  view: 'front' as 'front' | 'back',
   texts: [] as TextLayer[],
   logos: [] as LogoLayer[],
-  activeTab: 'colors',
-  autoRotate: true,
+  activeTab: 'style',
+  autoRotate: false,
+  debugGrid: false,
 });

@@ -24,7 +24,7 @@ const CUTS: { id: ShirtCut; label: string; desc: string; svg: string }[] = [
   },
   {
     id: 'baseball-raglan',
-    label: 'Baseball Raglan',
+    label: 'Raglan 3/4',
     desc: '3/4 sleeves, classic sporty look',
     svg: `<svg viewBox="0 0 60 70" fill="currentColor">
       <path d="M18,20 L42,20 L42,62 L18,62 Z" opacity="0.9"/>
@@ -33,11 +33,13 @@ const CUTS: { id: ShirtCut; label: string; desc: string; svg: string }[] = [
     </svg>`,
   },
   {
-    id: 'vneck',
-    label: 'V-Neck',
-    desc: 'Modern and casual open collar',
+    id: 'ringer',
+    label: 'Ringer Tee',
+    desc: 'Contrasting collar and sleeve cuffs',
     svg: `<svg viewBox="0 0 60 70" fill="currentColor">
-      <path d="M15,10 Q22,6 30,16 Q38,6 45,10 L55,18 L50,24 L42,20 L42,62 L18,62 L18,20 L10,24 L5,18 Z"/>
+      <path d="M15,10 Q30,4 45,10 L55,18 L50,24 L42,20 L42,62 L18,62 L18,20 L10,24 L5,18 Z"/>
+      <path d="M18,20 L10,24 L5,18 L15,10 Z" opacity="0.4"/>
+      <path d="M42,20 L50,24 L55,18 L45,10 Z" opacity="0.4"/>
     </svg>`,
   },
   {
@@ -52,14 +54,12 @@ const CUTS: { id: ShirtCut; label: string; desc: string; svg: string }[] = [
     </svg>`,
   },
   {
-    id: 'henley',
-    label: 'Henley',
-    desc: 'Round neck with 2–3 buttons',
+    id: 'box-tee',
+    label: 'Box Tee',
+    desc: 'Oversized heavyweight fit, Pro Club style',
     svg: `<svg viewBox="0 0 60 70" fill="currentColor">
-      <path d="M15,10 Q30,4 45,10 L55,18 L50,24 L42,20 L42,62 L18,62 L18,20 L10,24 L5,18 Z"/>
-      <rect x="28" y="8" width="4" height="10" rx="1" opacity="0.4"/>
-      <circle cx="30" cy="11" r="1.2" fill="white" opacity="0.7"/>
-      <circle cx="30" cy="15" r="1.2" fill="white" opacity="0.7"/>
+      <path d="M10,12 L50,12 L55,22 L55,65 L5,65 L5,22 Z"/>
+      <rect x="20" y="8" width="20" height="8" rx="2" opacity="0.5"/>
     </svg>`,
   },
 ];

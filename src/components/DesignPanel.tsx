@@ -169,18 +169,33 @@ export default function DesignPanel() {
 
       {/* Footer */}
       <div className="px-5 py-3 border-t border-border/50 bg-muted/20 flex items-center justify-between text-xs text-muted-foreground shrink-0">
-        <div className="flex items-center gap-2">
-          <span>Auto-rotate</span>
-          <Button
-            variant="ghost"
-            size="sm"
-            className={`h-6 px-2 text-[10px] uppercase tracking-wider ${
-              snap.autoRotate ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
-            }`}
-            onClick={() => (shirtStore.autoRotate = !snap.autoRotate)}
-          >
-            {snap.autoRotate ? 'On' : 'Off'}
-          </Button>
+        <div className="flex flex-col gap-2">
+           <div className="flex items-center gap-2">
+             <span>Auto-rotate</span>
+             <Button
+               variant="ghost"
+               size="sm"
+               className={`h-6 px-2 text-[10px] uppercase tracking-wider ${
+                 snap.autoRotate ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
+               }`}
+               onClick={() => (shirtStore.autoRotate = !snap.autoRotate)}
+             >
+               {snap.autoRotate ? 'On' : 'Off'}
+             </Button>
+           </div>
+           <div className="flex items-center gap-2">
+             <span>UV Grid</span>
+             <Button
+               variant="ghost"
+               size="sm"
+               className={`h-6 px-2 text-[10px] uppercase tracking-wider ${
+                 snap.debugGrid ? 'bg-red-500/10 text-red-500' : 'bg-muted text-muted-foreground'
+               }`}
+               onClick={() => (shirtStore.debugGrid = !snap.debugGrid)}
+             >
+               {snap.debugGrid ? 'Show' : 'Hide'}
+             </Button>
+           </div>
         </div>
         <div>
           Hold <kbd className="font-mono bg-muted px-1.5 py-0.5 rounded text-[10px]">Left Click</kbd> to rotate

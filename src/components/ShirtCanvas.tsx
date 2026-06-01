@@ -96,9 +96,10 @@ function ShirtModel() {
       snap.shirtCut,
       snap.layoutStyle,
       snap.color,
-      snap.accentColor
+      snap.accentColor,
+      snap.debugGrid
     );
-  }, [snap.shirtCut, snap.layoutStyle, snap.color, snap.accentColor]);
+  }, [snap.shirtCut, snap.layoutStyle, snap.color, snap.accentColor, snap.debugGrid]);
 
   // Dispose texture on unmount
   useEffect(() => () => shirtTexture.dispose(), [shirtTexture]);
